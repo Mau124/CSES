@@ -5,7 +5,7 @@ using namespace std;
 #define ll long long
  
 vector<int> adj[N];
-ll n, q, a, b, pos[N], node[N], sub[N], node_value[N], val[N];
+ll n, q, a, b, pos[N], sub[N], node_value[N], val[N];
  
 int it = 0;
  
@@ -68,10 +68,8 @@ public:
 void dfs(int v, int p) {
     sub[v] = 1;
     node_value[it] = val[v];
-    pos[v] = it;
-    node[it++] = v;
+    pos[v] = it++;
      
-
     for(int u: adj[v]) {
         if(u != p) {
             dfs(u, v);        
@@ -80,7 +78,7 @@ void dfs(int v, int p) {
     }
 }
  
-void print(ll a[], ll n) {
+void print(ll a[], int n) {
     for(int i=1; i<=n; ++i) 
         cout << a[i] << " ";
     cout << "\n";
@@ -88,7 +86,6 @@ void print(ll a[], ll n) {
  
 void printValues(int n) {
     print(pos, n);
-    print(node, n);
     print(sub, n);
     print(node_value, n);
 }
