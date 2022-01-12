@@ -5,26 +5,29 @@ using namespace std;
 
 // Number of nodes
 #define N 200001
-#define LOG 18
+#define LOG 19
+#define ll long long
 
 vector<int> adj[N];
-int depth[2][N], pos[N], it = 0;
+vector<int> euler_tour(2*N), depth(2*N), pos(N);
+
+static int it = 0;
 
 // sp if for sparse_stable
 int sp[2*N][LOG];
 int idx[2*N][LOG];
 
-void dfs(int v, int parent, int aux_depth) {
-    depth[0][it] = v;
-    depth[1][it] = aux_depth;
+void dfs(int v, int parent, int l) {
+    euler_tour[it] = v;
+    depth[it] = l;
     pos[v] = it;
     it++;
 
     for(int u: adj[v]) {
         if(u != parent) {
-            dfs(u, v, aux_depth+1);
-            depth[0][it] = v;
-            depth[1][it] = aux_depth;
+            dfs(u, v, l + 1);
+            euler_tour[it] = v;
+            depth[it] = l;
             it++;
        } 
     }
@@ -51,13 +54,13 @@ int query(int l, int r) {
     //cout << "Imprimiendo los valores de l y r\n";
     //cout << l << " " << r << endl;
     // Closest power of two to diff
-    while((1<<(k+1)) <= diff) 
+    while((1LL<<(k+1)) <= diff) 
         k++;
 
-    if(sp[l][k] < sp[r-(1<<k)+1][k]) {
+    if(sp[l][k] < sp[r-(1LL<<k)+1][k]) {
         return idx[l][k];
     } else {
-        return idx[r-(1<<k)+1][k];
+        return idx[r-(1LL<<k)+1][k];
     }
     //return min(sp[l][k], sp[r-(1<<k)+1][k]);
 }
@@ -71,8 +74,8 @@ int main() {
 
     for(int i=2; i<=n; ++i) {
          cin >> boss;
-         adj[i].push_back(boss);
-         adj[boss].push_back(i);
+         adj[i].push_back(boss); 
+         adj[boss].push_back(i); 
     } 
 
     // Euler tour
@@ -85,19 +88,19 @@ int main() {
 
     // Construct sparse table
     for(int i = 0; i<2*n-1; ++i) {
-        idx[i][0] = depth[0][i];
-        sp[i][0] = depth[1][i];
+        idx[i][0] = euler_tour[i];
+        sp[i][0] = depth[i];
     }
 
     for(int j = 1; j < LOG; ++j) {
-        for(int i=0; i < (2*n-1)-(1<<j)+1; ++i) {
+        for(int i=0; i < (2*n-1)-(1LL<<j)+1; ++i) {
 
-            if(sp[i][j-1] < sp[i+(1<<(j-1))][j-1]) {
+            if(sp[i][j-1] < sp[i+(1LL<<(j-1))][j-1]) {
                 idx[i][j] = idx[i][j-1];
                 sp[i][j] = sp[i][j-1];
             } else {
-                idx[i][j] = idx[i+(1<<(j-1))][j-1];
-                sp[i][j] = sp[i+(1<<(j-1))][j-1];
+                idx[i][j] = idx[i+(1LL<<(j-1))][j-1];
+                sp[i][j] = sp[i+(1LL<<(j-1))][j-1];
             }
             // sp[i][j] = min(sp[i][j-1], sp[i+(1<<(j-1))][j-1]);
         } 
