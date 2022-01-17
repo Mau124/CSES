@@ -27,6 +27,31 @@ void dfs(int v, int par, int l) {
     }
 }
 
+int query(int l, int r) {
+    if(l > r) {
+        int tmp = r;
+        r = l;
+        l = tmp;
+    }
+
+    int diff = r-l+1;
+    int k = 0;
+
+    while((1<<(k+1)) <= diff) 
+        k++;
+    
+    //cout << "Depth[l]: " << depth[l] << endl;
+    //cout << "Depth[r]: " << depth[r] << endl;
+    //cout << "Depth[LCA]: " << min(sp[k][l], sp[k][r-(1<<k)+1]) << endl;
+    return depth[l] + depth[r] - (2 * min(sp[k][l], sp[k][r-(1<<k)+1]));
+}
+
+void print(int a[], int n) {
+    for(int i=0; i<n; ++i)
+        cout << a[i] << " ";
+    cout << "\n";
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(0);
@@ -44,6 +69,8 @@ int main() {
 
     // Euler tour for LCA
     dfs(1, -1, 1); 
+    //print(depth, 2*n-1);
+    //print(pos, n+1);
 
     // First row of sparse table
     for(int i=0; i<2*n-1; ++i) {
@@ -52,16 +79,24 @@ int main() {
 
     // Construct sparse table
     for(int i=1; i<LOG; ++i) {
-        for(int j=0; j<((2*n-1) - (1<<j) + 1); ++j) {
-            sp[][
+        for(int j=0; j<(2*n-1)-(1<<i)+1; ++j) {
+            sp[i][j] = min(sp[i-1][j], sp[i-1][j + (1<<(i-1))]);
         } 
     }      
+
+    //cout << "Imprimiendo la sparse table\n";
+    //for(int i=0; i<LOG; ++i) {
+        //for(int j=0; j<2*n-1; ++j) {
+            //cout << sp[i][j] << " ";
+        //}
+        //cout << "\n";
+    //}
 
     // Read queries
     for(int qq=0; qq<q; ++qq) {
         cin >> a >> b;
 
-
+        cout << query(pos[a], pos[b]) << "\n";
     } 
 
     return 0;
