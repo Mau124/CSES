@@ -11,7 +11,7 @@ const int v[] = {-1, 0, 1, 0};
 const int h[] = {0, 1, 0, -1};
 
 queue<pair<int, int>> player;
-vector<queue<pair<int, int>>> monsters;
+queue<pair<int, int>> monsters;
 bool isPosible = false;
 
 int main() {
@@ -32,45 +32,38 @@ int main() {
             }
 
             if(mat[i][j] == 'M') {
-                queue<pair<int, int>> tmp;
-                tmp.push({i, j});
-                monsters.push_back(tmp);
+                pair<int, int> tmp = make_pair(i, j);
+                monsters.push(tmp);
                 mat[i][j] = '#';
             }
         }
     }
 
     // Start bfs
+    int possibilities;
     while(!player.empty() && !isPosible) 
     {
         // Hacer bfs sobre los monstruos
-        for(auto &monster: monsters) 
-        {
-            int possibilities = monster.size();
+        possibilities = monsters.size();
 
-            for(int k=0; k<possibilities; ++k) 
-            {
-                pair<int, int> tmp = monster.front();
-                monster.pop();
+        for(int k=0; k<possibilities; ++k) {
+            pair<int, int> tmp = monsters.front();
+            monsters.pop();
 
-                // Check for adyacent vertices
-                for(int i=0; i<4; ++i) 
-                {
-                    int dv = tmp.first+v[i];
-                    int dh = tmp.second+h[i];
+            // Check for adyacent vertices
+            for(int i=0; i<4; ++i) {
+                int dv = tmp.first+v[i];
+                int dh = tmp.second+h[i];
 
-                    if(dv >=0 && dv < n && dh >= 0 && dh < m && mat[dv][dh] != '#') 
-                    {
-                        monster.push({dv, dh});
-                        mat[dv][dh] = '#';
-                    }
+                if(dv >= 0 && dv < n && dh >= 0 && dh < m && mat[dv][dh] != '#') {
+                    monsters.push({dv, dh}); 
+                    mat[dv][dh] = '#';
                 }
             }
         }
 
         // Hacer bfs sobre el jugador
-        int possibilities = player.size();
-
+        possibilities = player.size();
         for(int k=0; k<possibilities; ++k) 
         {
             pair<int, int> tmp = player.front();
