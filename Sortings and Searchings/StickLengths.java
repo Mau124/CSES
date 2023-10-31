@@ -1,0 +1,65 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+import java.io.PrintWriter;
+
+public class StickLengths {
+	
+	public static void main(String[] args) {
+		FastScanner fs = new FastScanner();
+		PrintWriter out = new PrintWriter(System.out);
+		
+		int n = fs.nextInt();
+		long[] arr = new long[n];
+		for(int i=0; i<n; ++i) {
+			arr[i] = fs.nextInt();
+		}
+		
+		if(n == 1) {
+			System.out.println(0);
+			return;
+		}
+		
+		Arrays.sort(arr);
+		int m = (int)Math.floor(n/2.0);
+		double pivot =  (n%2==1) ? arr[m] : (arr[m] + arr[m-1])/2.0;
+		double cost = 0;
+		for(int i=0; i<n; ++i) {
+			cost += Math.abs(arr[i] - pivot);
+		}
+//		System.out.println(pivot);
+//		for(int e:arr) {
+//			System.out.print(e + " ");
+//		}
+		System.out.println((long)cost);
+		
+		out.close();
+	}
+	
+	static class FastScanner {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer("");
+		
+		public String next() {
+			while(!st.hasMoreElements()) {
+				try {
+					st = new StringTokenizer(br.readLine());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			return st.nextToken();
+		}
+		
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+		
+		public long nextLong() {
+			return Long.parseLong(next());
+		}
+	}
+}
